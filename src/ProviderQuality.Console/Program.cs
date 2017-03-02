@@ -18,12 +18,12 @@ namespace ProviderQuality.Console
             {
                 Awards = new List<Award>
                 {
-                    new Award {Name = "Gov Quality Plus", SellIn = 10, Quality = 20},
-                    new Award {Name = "Blue First", SellIn = 2, Quality = 0},
-                    new Award {Name = "ACME Partner Facility", SellIn = 5, Quality = 7},
-                    new Award {Name = "Blue Distinction Plus", SellIn = 0, Quality = 80},
-                    new Award {Name = "Blue Compare", SellIn = 15, Quality = 20},
-                    new Award {Name = "Top Connected Providres", SellIn = 3, Quality = 6}
+                    new Award {Name = "ACME Partner Facility", ExpiresIn = 5, Quality = 7},
+                    new Award {Name = "Blue Compare", ExpiresIn = 15, Quality = 20},
+                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 0, Quality = 80},
+                    new Award {Name = "Blue First", ExpiresIn = 2, Quality = 0},
+                    new Award {Name = "Gov Quality Plus", ExpiresIn = 10, Quality = 20},
+                    new Award {Name = "Top Connected Providers", ExpiresIn = 3, Quality = 6}
                 }
 
             };
@@ -36,8 +36,10 @@ namespace ProviderQuality.Console
 
         public void UpdateQuality()
         {
+            //Loop through all the awards
             for (var i = 0; i < Awards.Count; i++)
             {
+                // All awards that are NOT "Blue First, Blue Compare, Blue Distinction Plus - if the Quality is > 0, reduce it by 1
                 if (Awards[i].Name != "Blue First" && Awards[i].Name != "Blue Compare")
                 {
                     if (Awards[i].Quality > 0)
@@ -48,15 +50,18 @@ namespace ProviderQuality.Console
                         }
                     }
                 }
+                // "Blue First, Blue Compare"
                 else
                 {
+                    // If the quality is not at Max yet, increase it by 1
                     if (Awards[i].Quality < 50)
                     {
                         Awards[i].Quality = Awards[i].Quality + 1;
 
                         if (Awards[i].Name == "Blue Compare")
                         {
-                            if (Awards[i].SellIn < 11)
+                            // If Blue Compare expires in 10 days or less and the quality is not at Max yet, increase it by another 1 (doubling the rate)
+                            if (Awards[i].ExpiresIn < 11)
                             {
                                 if (Awards[i].Quality < 50)
                                 {
@@ -64,7 +69,8 @@ namespace ProviderQuality.Console
                                 }
                             }
 
-                            if (Awards[i].SellIn < 6)
+                            // If Blue Compare expires in 5 days or less and the quality is not at Max yet, increase it by another 1 (tripling the rate)
+                            if (Awards[i].ExpiresIn < 6)
                             {
                                 if (Awards[i].Quality < 50)
                                 {
@@ -75,13 +81,16 @@ namespace ProviderQuality.Console
                     }
                 }
 
+                // All awards except "Blue Distinction Plus" reduce the remaining expires in value by 1
                 if (Awards[i].Name != "Blue Distinction Plus")
                 {
-                    Awards[i].SellIn = Awards[i].SellIn - 1;
+                    Awards[i].ExpiresIn = Awards[i].ExpiresIn - 1;
                 }
 
-                if (Awards[i].SellIn < 0)
+                // if the award has expired
+                if (Awards[i].ExpiresIn < 0)
                 {
+                    // All awards except "Blue First"
                     if (Awards[i].Name != "Blue First")
                     {
                         if (Awards[i].Name != "Blue Compare")
@@ -94,13 +103,16 @@ namespace ProviderQuality.Console
                                 }
                             }
                         }
+                        // "Blue Compare"
                         else
                         {
+                            // Quality becomes 0 after it has expired
                             Awards[i].Quality = Awards[i].Quality - Awards[i].Quality;
                         }
                     }
                     else
                     {
+                        // "Blue First"
                         if (Awards[i].Quality < 50)
                         {
                             Awards[i].Quality = Awards[i].Quality + 1;

@@ -15,7 +15,7 @@ namespace ProviderQuality.Tests
             {
                 Awards = new List<Award>
                 {
-                    new Award {Name = "Blue Distinction Plus", SellIn = 0, Quality = 80}
+                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 0, Quality = 80}
                 }
             };
 
@@ -31,5 +31,24 @@ namespace ProviderQuality.Tests
         // +++To Do - 1/10/2013: Discuss with team about adding more tests.  Seems like a lot of work for something
         //                       that probably won't change.  I watched it all in the debugger and know everything works
         //                       plus QA has already signed off and no one has complained.
+
+        //Types of Awards
+        //Blue First
+        //Blue Compare
+        //Blue Distinction Plus
+        //Gov Quality Plus
+        //ACME Partner Facility
+        //Top Connected Providers
+
+
+
+
+
+
+
+
+
+
+
     }
 }
