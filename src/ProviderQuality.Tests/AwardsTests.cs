@@ -30,13 +30,25 @@ namespace ProviderQuality.Tests
 
             foreach (string award in AwardTypes)
             {
+                List<Award> awards = new List<Award>();
+
+                // 51 Quality records from 0 to 50
                 for (int quality = 0; quality <= 50; quality++)
                 {
-                    //AwardFactory.Get()
+                    // 13 Expires records from 11 to -1
+                    // Currently the only date thresholds that matter are: (n > 10), (10 >= n > 5), (5 >= n >= 0), (n < 0) Expired
+                    for (int expiresIn = 11; expiresIn >= -1; expiresIn--)
+                    {
+                        if (!AllAwards.ContainsKey(award))
+                        {
+                            AllAwards.Add(award, awards);
+                        }
 
+                        // Total should be 6 types X (51 qualities X 13 expiresIn) [663] = 3,978 awards
+                        AllAwards[award].Add(AwardFactory.Get(award, expiresIn, quality));
+                    }
                 }
             }
-
         }
 
         [TestCleanup]
@@ -45,46 +57,41 @@ namespace ProviderQuality.Tests
             AwardTypes.Clear();
             AwardTypes = null;
 
+            foreach(string key in AllAwards.Keys)
+            {
+                AllAwards[key].Clear();
+            }
+
             AllAwards.Clear();
             AllAwards = null;
         }
 
+        /// <summary>
+        /// Verifying the construction of all instances of all awards with all possible combinations of properties.
+        /// </summary>
         [TestMethod]
         public void TestAllAwardsValidation()
         {
             Assert.IsNotNull(AllAwards);
             Assert.IsTrue(AllAwards.Keys.Count == 6);
-            Assert.IsTrue(AllAwards["ACME Partner Facility"].Count == 50);
-            //Assert.IsTrue(app.Awards.Count == 1);
-            //Assert.IsTrue(app.Awards[0].Name == "Blue Distinction Plus");
-            //Assert.IsTrue(app.Awards[0].Quality == 80);
 
-            //app.UpdateQuality();
+            Assert.IsTrue(AllAwards.ContainsKey("ACME Partner Facility"));
+            Assert.IsTrue(AllAwards.ContainsKey("Gov Quality Plus"));
+            Assert.IsTrue(AllAwards.ContainsKey("Top Connected Providers"));
 
-            //Assert.IsTrue(app.Awards[0].Quality == 80);
+            Assert.IsTrue(AllAwards.ContainsKey("Blue First"));
+            Assert.IsTrue(AllAwards.ContainsKey("Blue Compare"));
+
+            Assert.IsTrue(AllAwards.ContainsKey("Blue Distinction Plus"));
+
+            Assert.IsTrue(AllAwards["ACME Partner Facility"].Count == 663);
+            Assert.IsTrue(AllAwards["Gov Quality Plus"].Count == 663);
+            Assert.IsTrue(AllAwards["Top Connected Providers"].Count == 663);
+
+            Assert.IsTrue(AllAwards["Blue First"].Count == 663);
+            Assert.IsTrue(AllAwards["Blue Compare"].Count == 663);
+
+            Assert.IsTrue(AllAwards["Blue Distinction Plus"].Count == 663);
         }
-
-        // +++To Do - 1/10/2013: Discuss with team about adding more tests.  Seems like a lot of work for something
-        //                       that probably won't change.  I watched it all in the debugger and know everything works
-        //                       plus QA has already signed off and no one has complained.
-
-        //Types of Awards
-        //Blue First
-        //Blue Compare
-        //Blue Distinction Plus
-        //Gov Quality Plus
-        //ACME Partner Facility
-        //Top Connected Providers
-
-
-
-
-
-
-
-
-
-
-
     }
 }

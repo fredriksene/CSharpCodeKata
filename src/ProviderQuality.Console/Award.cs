@@ -16,92 +16,77 @@ namespace ProviderQuality.Console
         /// </summary>
         public Award() { }
 
-        public Award(string name, int expiresIn, int quality)
-        {
-            //Validate(name, expiresIn, quality);
+        #region Methods
 
-            Name = name;
-            ExpiresIn = expiresIn;
-            Quality = quality;
+        /// <summary>
+        /// Update the Quality property
+        /// </summary>
+        public virtual void UpdateQuality()
+        {
+            //if (Quality > 0)
+
         }
 
         /// <summary>
         /// Validate all the inputs for creating a new Award
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="expiresIn"></param>
-        /// <param name="quality"></param>
-        public virtual void Validate(string name, int expiresIn, int quality)
+        public virtual void Validate()
         {
-            ValidateName(name);
+            ValidateName();
 
-            ValidateExpiresIn(expiresIn);
+            ValidateExpiresIn();
 
-            ValidateQuality(quality);
+            ValidateQuality();
         }
 
         /// <summary>
-        /// Validate the quality parameter
+        /// Validate the Quality property
         /// </summary>
-        /// <param name="quality"></param>
-        public virtual void ValidateQuality(int quality)
+        public virtual void ValidateQuality()
         {
-            if (quality < 0)
+            if (this.Quality < 0)
             {
-                throw new ArgumentException("quality must be >= 0");
+                throw new ArgumentException("Quality must be >= 0");
             }
 
-            if (quality > 50)
+            if (this.Quality > 50)
             {
-                throw new ArgumentException("quality must be < 50");
+                throw new ArgumentException("Quality must be < 50");
             }
         }
 
         /// <summary>
-        /// Validate the expiresIn parameter
+        /// Validate the ExpiresIn property
         /// </summary>
-        /// <param name="expiresIn"></param>
-        public virtual void ValidateExpiresIn(int expiresIn)
+        public virtual void ValidateExpiresIn()
         {
-            if (expiresIn < 0)
+            if (this.ExpiresIn < -1)
             {
-                throw new ArgumentException("expiresIn must be >= 0");
+                throw new ArgumentException("ExpiresIn must be >= -1");
             }
         }
 
         /// <summary>
-        /// Validate the name parameter
+        /// Validate the Name property
         /// </summary>
-        /// <param name="name"></param>
-        public virtual void ValidateName(string name)
+        public virtual void ValidateName()
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(this.Name))
             {
-                if (name == null)
+                if (this.Name == null)
                 {
-                    throw new ArgumentNullException("name cannot be NULL");
+                    throw new ArgumentNullException("Name cannot be NULL");
                 }
                 else
                 {
-                    throw new ArgumentException("name cannot be EMPTY");
+                    throw new ArgumentException("Name cannot be EMPTY");
                 }
             }
         }
 
-        /// <summary>
-        /// The Name property
-        /// </summary>
-        public string Name { get; set; }
+        #endregion // Methods
 
-        /// <summary>
-        /// The ExpiresIn property
-        /// </summary>
-        public int ExpiresIn { get; set; }
-
-        /// <summary>
-        /// The Quality property
-        /// </summary>
-        public int Quality { get; set; }
+        #region Properties
 
         /// <summary>
         /// The immutable maximum quality value
@@ -117,6 +102,21 @@ namespace ProviderQuality.Console
         /// The immutable Blue Distinction Plus quality value
         /// </summary>
         public const int _BlueDistinctionPlusQuality = 80;
+
+        /// <summary>
+        /// The Name property
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The ExpiresIn property
+        /// </summary>
+        public int ExpiresIn { get; set; }
+
+        /// <summary>
+        /// The Quality property
+        /// </summary>
+        public int Quality { get; set; }
 
         /// <summary>
         /// The Quality of the Award when it was created 
@@ -146,32 +146,24 @@ namespace ProviderQuality.Console
             }
             set { }
         }
+
+        #endregion //Properties
     }
 
     public class BlueCompareAward : Award
     {
-        private const string BlueCompare_AwardName = "Blue Compare";
-
-        public BlueCompareAward(int expiresIn, int quality) : base(BlueCompare_AwardName, expiresIn, quality)
-        {
-            base.Validate(BlueCompare_AwardName, expiresIn, quality);
-        }
+        //private const string BlueCompare_AwardName = "Blue Compare";
     }
 
     public class BlueDistinctionPlusAward : Award
     {
-        private const string BlueDistinctionPlus_AwardName = "Blue Distinction Plus";
+        //private const string BlueDistinctionPlus_AwardName = "Blue Distinction Plus";
 
-        public BlueDistinctionPlusAward(int expiresIn, int quality) : base(BlueDistinctionPlus_AwardName, expiresIn, quality)
+        public override void ValidateQuality()
         {
-            base.Validate(BlueDistinctionPlus_AwardName, expiresIn, quality);
-        }
-
-        public override void ValidateQuality(int quality)
-        {
-            if (quality != Award._BlueDistinctionPlusQuality)
+            if (this.Quality != Award._BlueDistinctionPlusQuality)
             {
-                throw new ArgumentException("quality must be == " + Award._BlueDistinctionPlusQuality.ToString());
+                throw new ArgumentException("Quality must be == " + Award._BlueDistinctionPlusQuality.ToString());
             }
 
             //base.ValidateQuality(quality);
@@ -180,41 +172,36 @@ namespace ProviderQuality.Console
 
     public class BlueFirstAward : Award
     {
-        private const string BlueFirst_AwardName = "Blue First";
-
-        public BlueFirstAward(int expiresIn, int quality) : base(BlueFirst_AwardName, expiresIn, quality)
-        {
-            base.Validate(BlueFirst_AwardName, expiresIn, quality);
-        }
+        //private const string BlueFirst_AwardName = "Blue First";
     }
 
-    public class ACMEPartnerFacilityAward : Award
-    {
-        private const string ACMEPartnerFacility_AwardName = "ACME Partner Facility";
+    //public class ACMEPartnerFacilityAward : Award
+    //{
+    //    private const string ACMEPartnerFacility_AwardName = "ACME Partner Facility";
 
-        public ACMEPartnerFacilityAward(int expiresIn, int quality) : base(ACMEPartnerFacility_AwardName, expiresIn, quality)
-        {
-            base.Validate(ACMEPartnerFacility_AwardName, expiresIn, quality);
-        }
-    }
+    //    public ACMEPartnerFacilityAward(int expiresIn, int quality) : base(ACMEPartnerFacility_AwardName, expiresIn, quality)
+    //    {
+    //        base.Validate(ACMEPartnerFacility_AwardName, expiresIn, quality);
+    //    }
+    //}
 
-    public class GovQualityPlusAward : Award
-    {
-        private const string GovQualityPlus_AwardName = "Gov Quality Plus";
+    //public class GovQualityPlusAward : Award
+    //{
+    //    private const string GovQualityPlus_AwardName = "Gov Quality Plus";
 
-        public GovQualityPlusAward(int expiresIn, int quality) : base(GovQualityPlus_AwardName, expiresIn, quality)
-        {
-            base.Validate(GovQualityPlus_AwardName, expiresIn, quality);
-        }
-    }
+    //    public GovQualityPlusAward(int expiresIn, int quality) : base(GovQualityPlus_AwardName, expiresIn, quality)
+    //    {
+    //        base.Validate(GovQualityPlus_AwardName, expiresIn, quality);
+    //    }
+    //}
 
-    public class TopConnectedProvidersAward : Award
-    {
-        private const string TopConnectedProviders_AwardName = "Top Connected Providers";
+    //public class TopConnectedProvidersAward : Award
+    //{
+    //    private const string TopConnectedProviders_AwardName = "Top Connected Providers";
 
-        public TopConnectedProvidersAward(int expiresIn, int quality) : base(TopConnectedProviders_AwardName, expiresIn, quality)
-        {
-            base.Validate(TopConnectedProviders_AwardName, expiresIn, quality);
-        }
-    }
+    //    public TopConnectedProvidersAward(int expiresIn, int quality) : base(TopConnectedProviders_AwardName, expiresIn, quality)
+    //    {
+    //        base.Validate(TopConnectedProviders_AwardName, expiresIn, quality);
+    //    }
+    //}
 }
