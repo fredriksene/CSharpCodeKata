@@ -27,7 +27,7 @@ namespace ProviderQuality.Console
                             ExpiresIn = expiresIn,
                             Quality = quality,
                             OriginalQuality = quality,
-                            CurrentQuality = quality,
+                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;
@@ -36,15 +36,22 @@ namespace ProviderQuality.Console
                         {
                             Name = awardName,
                             ExpiresIn = expiresIn,
-                            Quality = quality
+                            Quality = quality,
+                            OriginalQuality = quality,
+                            //CurrentQuality = quality,
+                            CurrentDay = expiresIn,
                         };
                         break;
                     case "blue distinction plus":
                         createdAward = new BlueDistinctionPlusAward()
                         {
                             Name = awardName,
-                            ExpiresIn = -1,
-                            Quality = Award._BlueDistinctionPlusQuality
+                            ExpiresIn = expiresIn,
+                            //ExpiresIn = Award._Expired,
+                            Quality = BlueDistinctionPlusAward._BlueDistinctionPlusQuality,
+                            OriginalQuality = quality,
+                            //CurrentQuality = quality,
+                            CurrentDay = expiresIn,
                         };
                         break;
                     case "blue first":
@@ -52,7 +59,10 @@ namespace ProviderQuality.Console
                         {
                             Name = awardName,
                             ExpiresIn = expiresIn,
-                            Quality = quality
+                            Quality = quality,
+                            OriginalQuality = quality,
+                            //CurrentQuality = quality,
+                            CurrentDay = expiresIn,
                         };
                         break;
                     default:
@@ -60,11 +70,16 @@ namespace ProviderQuality.Console
                         {
                             Name = "Unknown",
                             ExpiresIn = expiresIn,
-                            Quality = quality
+                            Quality = quality,
+                            OriginalQuality = quality,
+                            //CurrentQuality = quality,
+                            CurrentDay = expiresIn,
                         };
                         break;
                 }
+                // Make sure thew new Award is valid
                 createdAward.Validate();
+
                 return createdAward;
             }
             catch(Exception ex)

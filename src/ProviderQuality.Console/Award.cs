@@ -23,8 +23,35 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void UpdateQuality()
         {
-            //if (Quality > 0)
+            // If it is not Expired
+            if (!IsExpired)
+            {
+                // If it still has a positive Quality value, reduce the Quality by 1
+                if (Quality > Award._MinQuality)
+                {
+                    Quality -= 1;
+                }
 
+                // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
+                if (CurrentDay > 0)
+                {
+                    CurrentDay -= 1;
+                }
+            }
+            else
+            {
+                // If it is expired, and if it still has a positive Quality value, reduce the Quality by 2
+                if (Quality > Award._MinQuality)
+                { 
+                    Quality -= 2;
+                }
+            }
+
+            // Quality can never be less than 0 (MinQuality)
+            if(Quality < Award._MinQuality)
+            {
+                Quality = Award._MinQuality;
+            }
         }
 
         /// <summary>
@@ -51,7 +78,7 @@ namespace ProviderQuality.Console
 
             if (this.Quality > 50)
             {
-                throw new ArgumentException("Quality must be < 50");
+                throw new ArgumentException("Quality must be <= 50");
             }
         }
 
@@ -99,9 +126,9 @@ namespace ProviderQuality.Console
         public const int _MinQuality = 0;
 
         /// <summary>
-        /// The immutable Blue Distinction Plus quality value
+        /// The immutable Expired value (-1 represents the final ExpiresIn/CurrentDay value when an Award has Expired)
         /// </summary>
-        public const int _BlueDistinctionPlusQuality = 80;
+        public const int _Expired = -1;
 
         /// <summary>
         /// The Name property
@@ -114,7 +141,7 @@ namespace ProviderQuality.Console
         public int ExpiresIn { get; set; }
 
         /// <summary>
-        /// The Quality property
+        /// The Quality of the Award for the CurrentDay 
         /// </summary>
         public int Quality { get; set; }
 
@@ -123,15 +150,15 @@ namespace ProviderQuality.Console
         /// </summary>
         public int OriginalQuality { get; set; }
 
-        /// <summary>
-        /// The Quality of the Award for the CurrentDay 
-        /// </summary>
-        public int CurrentQuality { get; set; }
+        ///// <summary>
+        ///// The Quality of the Award for the CurrentDay 
+        ///// </summary>
+        //public int CurrentQuality { get; set; }
 
         /// <summary>
         /// ExpiresIn represents the number of days remaining
         /// CurrentDay is the offset from ExpiresIn
-        /// ex. ExpiresIn = 5, CurrentDay will have values ranging from 5 - 0
+        /// ex. ExpiresIn = 5, CurrentDay will have values ranging from 5 to -1 (Expired)
         /// </summary>
         public int CurrentDay { get; set; }
 
@@ -150,29 +177,148 @@ namespace ProviderQuality.Console
         #endregion //Properties
     }
 
+    /// <summary>
+    /// The Blue Compare Award
+    /// </summary>
     public class BlueCompareAward : Award
     {
         //private const string BlueCompare_AwardName = "Blue Compare";
+
+        /// <summary>
+        /// Used to update the Quality at different rates
+        /// </summary>
+        public enum QualityAppreciationRate : int
+        {
+            Single = 1,
+            Double = 2,
+            Triple = 3
+        };
+
+        /// <summary>
+        /// Calculates the Appreciate Rate based on the CurrentDay
+        /// </summary>
+        public QualityAppreciationRate AppreciationRate
+        {
+            get
+            {
+                QualityAppreciationRate rate = QualityAppreciationRate.Single;
+                // Quality increases by 2 when there are 10 days or less left, and by 3 where there are 5 days or less left, but quality value drops to 0 after the expiration date.
+                if (CurrentDay < 6 && CurrentDay >= 0)
+                {
+                    rate = QualityAppreciationRate.Triple;
+                }
+                else if(CurrentDay < 11 && CurrentDay >= 6)
+                {
+                    rate = QualityAppreciationRate.Double;
+                }
+                return rate;
+            }
+        }
+        
+        /// <summary>
+        /// Blue Compare specific Update for the Quality property
+        /// </summary>
+        public override void UpdateQuality()
+        {
+            if (!IsExpired)
+            {
+                // If the Quality is not at Max yet, increase it by the AppreciationRate
+                if (Quality < Award._MaxQuality)
+                {
+                    Quality += (int)AppreciationRate;
+                    // Quality cannot be greater than Max so make sure the AppreciationRate does not put it over.
+                    Quality = Quality > Award._MaxQuality ? Award._MaxQuality : Quality;
+                }
+            }
+            else
+            {
+                // but Quality value drops to 0 after the expiration date.
+                Quality = 0;
+            }
+        }
     }
 
+    /// <summary>
+    /// The Blue Distinction Plus Award
+    /// </summary>
     public class BlueDistinctionPlusAward : Award
     {
         //private const string BlueDistinctionPlus_AwardName = "Blue Distinction Plus";
 
+        /// <summary>
+        /// The immutable Blue Distinction Plus Quality value (Highest Quality)
+        /// </summary>
+        public const int _BlueDistinctionPlusQuality = 80;
+
+        /// <summary>
+        /// Blue Distinction Plus override for validating Quality property
+        /// </summary>
         public override void ValidateQuality()
         {
-            if (this.Quality != Award._BlueDistinctionPlusQuality)
+            if (this.Quality != BlueDistinctionPlusAward._BlueDistinctionPlusQuality)
             {
-                throw new ArgumentException("Quality must be == " + Award._BlueDistinctionPlusQuality.ToString());
+                throw new ArgumentException("Quality must be == " + BlueDistinctionPlusAward._BlueDistinctionPlusQuality.ToString());
             }
+        }
 
-            //base.ValidateQuality(quality);
+        ///// <summary>
+        ///// Blue Distinction Plus override for validating ExpiresIn property
+        ///// </summary>
+        //public override void ValidateExpiresIn()
+        //{
+        //    if (ExpiresIn != Award._Expired)
+        //    {
+        //        throw new ArgumentException("ExpiresIn must be == " + Award._Expired.ToString());
+        //    }
+
+        //    //base.ValidateExpiresIn();
+        //}
+
+        /// <summary>
+        /// Blue Distinction Plus specific Update for the Quality property
+        /// </summary>
+        public override void UpdateQuality()
+        {
+            //Do Nothing - Leave the Values set to: Quality=80 and ExpiresIn=-1
         }
     }
 
+    /// <summary>
+    /// The Blue First Award
+    /// </summary>
     public class BlueFirstAward : Award
     {
         //private const string BlueFirst_AwardName = "Blue First";
+
+        /// <summary>
+        /// Blue First specific Update for the Quality property
+        /// </summary>
+        public override void UpdateQuality()
+        {
+            if (!IsExpired)
+            {
+                // Always increases Quality by one until MaxQuality
+                if (Quality < Award._MaxQuality)
+                {
+                    Quality += 1;
+                }
+
+                // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
+                if (CurrentDay > 0)
+                {
+                    CurrentDay -= 1;
+                }
+            }
+
+            if (IsExpired)
+            {
+                // Always increases Quality by one until MaxQuality
+                if (Quality < Award._MaxQuality)
+                {
+                    Quality += 1;
+                }
+            }
+        }
     }
 
     //public class ACMEPartnerFacilityAward : Award

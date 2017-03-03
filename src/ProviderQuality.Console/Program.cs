@@ -99,6 +99,7 @@ namespace ProviderQuality.Console
                             {
                                 if (Awards[i].Name != "Blue Distinction Plus")
                                 {
+                                    // All Non-Blue awards have no Quality if they have expired
                                     Awards[i].Quality = Awards[i].Quality - 1;
                                 }
                             }
