@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProviderQuality.Console
 {
@@ -27,7 +23,6 @@ namespace ProviderQuality.Console
                             ExpiresIn = expiresIn,
                             Quality = quality,
                             OriginalQuality = quality,
-                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;
@@ -38,7 +33,6 @@ namespace ProviderQuality.Console
                             ExpiresIn = expiresIn,
                             Quality = quality,
                             OriginalQuality = quality,
-                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;
@@ -47,10 +41,8 @@ namespace ProviderQuality.Console
                         {
                             Name = awardName,
                             ExpiresIn = expiresIn,
-                            //ExpiresIn = Award._Expired,
                             Quality = BlueDistinctionPlusAward._BlueDistinctionPlusQuality,
                             OriginalQuality = quality,
-                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;
@@ -61,7 +53,6 @@ namespace ProviderQuality.Console
                             ExpiresIn = expiresIn,
                             Quality = quality,
                             OriginalQuality = quality,
-                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;
@@ -72,7 +63,6 @@ namespace ProviderQuality.Console
                             ExpiresIn = expiresIn,
                             Quality = quality,
                             OriginalQuality = quality,
-                            //CurrentQuality = quality,
                             CurrentDay = expiresIn,
                         };
                         break;

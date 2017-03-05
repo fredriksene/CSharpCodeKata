@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProviderQuality.Console;
+using System.Collections.Generic;
 
 namespace ProviderQuality.Tests
 {
@@ -39,10 +38,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Compare
-        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
+        /// Execute an UpdateQuality and make sure Quality increases by 1 when not expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueCompare_AppQualityUpdate_Unexpired()
+        public void Test_BlueCompare_AppUpdateQuality_Unexpired()
         {
             var app = new Program()
             {
@@ -64,10 +63,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Compare
-        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
+        /// Execute an UpdateQuality and make sure Quality drops to 0 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueCompare_AppQualityUpdate_Expired()
+        public void Test_BlueCompare_AppUpdateQuality_Expired()
         {
             var app = new Program()
             {
@@ -89,11 +88,11 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Compare
-        /// Execute a QualityUpdate and make sure Quality increases by 3 the day before the award expires
-        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
+        /// Execute an UpdateQuality and make sure Quality increases by 3 the day before the award expires
+        /// Execute an UpdateQuality and make sure Quality drops to 0 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueCompare_AppQualityUpdate_UnexpiredExpired()
+        public void Test_BlueCompare_AppUpdateQuality_UnexpiredExpired()
         {
             var app = new Program()
             {
@@ -119,12 +118,12 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Compare
-        /// Execute a QualityUpdate and make sure Quality does not exceed 50 when not expired
-        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
-        /// Execute a QualityUpdate and make sure Quality remains 0 when expired
+        /// Execute an UpdateQuality and make sure Quality does not exceed 50 when not expired
+        /// Execute an UpdateQuality and make sure Quality drops to 0 when expired
+        /// Execute an UpdateQuality and make sure Quality remains 0 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueCompare_AppQualityUpdate_MaxMinQuality()
+        public void Test_BlueCompare_AppUpdateQuality_MaxMinQuality()
         {
             var app = new Program()
             {
@@ -161,10 +160,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Distinction Plus
-        /// Execute a QualityUpdate and make sure Quality remains 80 when not expired
+        /// Execute an UpdateQuality and make sure Quality remains 80 when not expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueDistinctionPlus_AppQualityUpdate_Unexpired()
+        public void Test_BlueDistinctionPlus_AppUpdateQuality_Unexpired()
         {
             var app = new Program()
             {
@@ -186,10 +185,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Distinction Plus
-        /// Execute a QualityUpdate and make sure Quality remains at 80 when expired
+        /// Execute an UpdateQuality and make sure Quality remains at 80 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueDistinctionPlus_AppQualityUpdate_Expired()
+        public void Test_BlueDistinctionPlus_AppUpdateQuality_Expired()
         {
             var app = new Program()
             {
@@ -211,11 +210,11 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue Distinction Plus
-        /// Execute a QualityUpdate and make sure Quality remains 80 when not expired
-        /// Execute a QualityUpdate and make sure Quality remains 80 when expired
+        /// Execute an UpdateQuality and make sure Quality remains 80 when not expired
+        /// Execute an UpdateQuality and make sure Quality remains 80 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueDistinctionPlus_AppQualityUpdate_UnexpiredExpired()
+        public void Test_BlueDistinctionPlus_AppUpdateQuality_UnexpiredExpired()
         {
             var app = new Program()
             {
@@ -245,10 +244,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue First
-        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
+        /// Execute an UpdateQuality and make sure Quality increases by 1 when not expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueFirst_AppQualityUpdate_Unexpired()
+        public void Test_BlueFirst_AppUpdateQuality_Unexpired()
         {
             var app = new Program()
             {
@@ -270,10 +269,10 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue First
-        /// Execute a QualityUpdate and make sure Quality increases by 2 when expired
+        /// Execute an UpdateQuality and make sure Quality increases by 2 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueFirst_AppQualityUpdate_Expired()
+        public void Test_BlueFirst_AppUpdateQuality_Expired()
         {
             var app = new Program()
             {
@@ -295,11 +294,11 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue First
-        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
-        /// Execute a QualityUpdate and make sure Quality increases by 2 when expired
+        /// Execute an UpdateQuality and make sure Quality increases by 1 when not expired
+        /// Execute an UpdateQuality and make sure Quality increases by 2 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueFirst_AppQualityUpdate_UnexpiredExpired()
+        public void Test_BlueFirst_AppUpdateQuality_UnexpiredExpired()
         {
             var app = new Program()
             {
@@ -325,12 +324,12 @@ namespace ProviderQuality.Tests
 
         /// <summary>
         /// Covers Blue First
-        /// Execute a QualityUpdate and make sure Quality increases by 2 the day it expires
-        /// Execute a QualityUpdate and make sure Quality increases by 1 when expired to max of 50
-        /// Execute a QualityUpdate and make sure Quality does not exceed 50 when expired
+        /// Execute an UpdateQuality and make sure Quality increases by 2 the day it expires
+        /// Execute an UpdateQuality and make sure Quality increases by 1 when expired to max of 50
+        /// Execute an UpdateQuality and make sure Quality does not exceed 50 when expired
         /// </summary>
         [TestMethod]
-        public void Test_BlueFirst_AppQualityUpdate_MaxQuality()
+        public void Test_BlueFirst_AppUpdateQuality_MaxQuality()
         {
             var app = new Program()
             {
@@ -370,7 +369,7 @@ namespace ProviderQuality.Tests
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void Test_GenericAward_AppQualityUpdate_Unexpired()
+        public void Test_GenericAward_AppUpdateQuality_Unexpired()
         {
             var app = new Program()
             {
@@ -405,7 +404,7 @@ namespace ProviderQuality.Tests
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void Test_GenericAward_AppQualityUpdate_Expired()
+        public void Test_GenericAward_AppUpdateQuality_Expired()
         {
             var app = new Program()
             {
@@ -443,7 +442,7 @@ namespace ProviderQuality.Tests
         ///     the second is when all three awards are expired
         /// </summary>
         [TestMethod]
-        public void Test_GenericAward_AppQualityUpdate_UnexpiredExpired()
+        public void Test_GenericAward_AppUpdateQuality_UnexpiredExpired()
         {
             var app = new Program()
             {
@@ -484,7 +483,7 @@ namespace ProviderQuality.Tests
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void Test_GenericAward_AppQualityUpdate_MinQuality()
+        public void Test_GenericAward_AppUpdateQuality_MinQuality()
         {
             var app = new Program()
             {

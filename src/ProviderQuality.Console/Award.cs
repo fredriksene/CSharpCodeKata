@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProviderQuality.Console
 {
@@ -23,34 +19,25 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void UpdateQuality()
         {
-            // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
-            if (CurrentDay >= 0)
-            {
-                CurrentDay -= 1;
-            }
+            // Reduce the CurrentDay by 1
+            CurrentDay--;
 
-            // If it is not Expired
-            if (!IsExpired)
+            if (Quality > Award._MinQuality)
             {
-                // If it still has a positive Quality value, reduce the Quality by 1
-                if (Quality > Award._MinQuality)
+                if (!IsExpired)
                 {
+                    // If it is not Expired and still has a positive Quality value, reduce the Quality by 1
                     Quality -= 1;
                 }
-
-            }
-
-            if(IsExpired)
-            {
-                // If it is expired, and if it still has a positive Quality value, reduce the Quality by 2
-                if (Quality > Award._MinQuality)
-                { 
+                else
+                {
+                    // If it is expired, and if it still has a positive Quality value, reduce the Quality by 2
                     Quality -= 2;
                 }
             }
 
             // Quality can never be less than 0 (MinQuality)
-            if(Quality < Award._MinQuality)
+            if (Quality < Award._MinQuality)
             {
                 Quality = Award._MinQuality;
             }
@@ -63,8 +50,6 @@ namespace ProviderQuality.Console
         {
             ValidateName();
 
-            ValidateExpiresIn();
-
             ValidateQuality();
         }
 
@@ -73,25 +58,14 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void ValidateQuality()
         {
-            if (this.Quality < 0)
+            if (Quality < _MinQuality)
             {
-                throw new ArgumentException("Quality must be >= 0");
+                throw new ArgumentException("Quality must be >= " + _MinQuality.ToString());
             }
 
-            if (this.Quality > 50)
+            if (Quality > _MaxQuality)
             {
-                throw new ArgumentException("Quality must be <= 50");
-            }
-        }
-
-        /// <summary>
-        /// Validate the ExpiresIn property
-        /// </summary>
-        public virtual void ValidateExpiresIn()
-        {
-            if (this.ExpiresIn < -1)
-            {
-                throw new ArgumentException("ExpiresIn must be >= -1");
+                throw new ArgumentException("Quality must be <= " + _MaxQuality.ToString());
             }
         }
 
@@ -100,9 +74,9 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void ValidateName()
         {
-            if (string.IsNullOrWhiteSpace(this.Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                if (this.Name == null)
+                if (Name == null)
                 {
                     throw new ArgumentNullException("Name cannot be NULL");
                 }
@@ -113,9 +87,19 @@ namespace ProviderQuality.Console
             }
         }
 
-        #endregion // Methods
+        #endregion //END - Methods
 
         #region Properties
+
+        /// <summary>
+        /// Used to update the Quality at different rates
+        /// </summary>
+        public enum QualityRate : int
+        {
+            Single = 1,
+            Double = 2,
+            Triple = 3
+        };
 
         /// <summary>
         /// The immutable maximum quality value
@@ -126,11 +110,6 @@ namespace ProviderQuality.Console
         /// The immutable minimum quality value
         /// </summary>
         public const int _MinQuality = 0;
-
-        /// <summary>
-        /// The immutable Expired value (-1 represents the final ExpiresIn/CurrentDay value when an Award has Expired)
-        /// </summary>
-        public const int _Expired = -1;
 
         /// <summary>
         /// The Name property
@@ -152,15 +131,10 @@ namespace ProviderQuality.Console
         /// </summary>
         public int OriginalQuality { get; set; }
 
-        ///// <summary>
-        ///// The Quality of the Award for the CurrentDay 
-        ///// </summary>
-        //public int CurrentQuality { get; set; }
-
         /// <summary>
         /// ExpiresIn represents the number of days remaining
         /// CurrentDay is the offset from ExpiresIn
-        /// ex. ExpiresIn = 5, CurrentDay will have values ranging from 5 to -1 (Expired)
+        /// ex. ExpiresIn = 5, in decremented 1 for each UpdateQuality call
         /// </summary>
         public int CurrentDay { get; set; }
 
@@ -173,10 +147,9 @@ namespace ProviderQuality.Console
             {
                 return CurrentDay < 0;
             }
-            set { }
         }
 
-        #endregion //Properties
+        #endregion //END - Properties
     }
 
     /// <summary>
@@ -184,61 +157,50 @@ namespace ProviderQuality.Console
     /// </summary>
     public class BlueCompareAward : Award
     {
-        //private const string BlueCompare_AwardName = "Blue Compare";
-
-        /// <summary>
-        /// Used to update the Quality at different rates
-        /// </summary>
-        public enum QualityAppreciationRate : int
-        {
-            Single = 1,
-            Double = 2,
-            Triple = 3
-        };
-
         /// <summary>
         /// Calculates the Appreciate Rate based on the CurrentDay
         /// </summary>
-        public QualityAppreciationRate AppreciationRate
+        public QualityRate AppreciationRate
         {
             get
             {
-                QualityAppreciationRate rate = QualityAppreciationRate.Single;
-                // Quality increases by 2 when there are 10 days or less left, and by 3 where there are 5 days or less left, but quality value drops to 0 after the expiration date.
+                QualityRate rate = QualityRate.Single;
+                // Quality increases by 2 when there are 10 days or less left, and by 3 where there are 5 days or less left
                 if (CurrentDay < 6 && CurrentDay >= 0)
                 {
-                    rate = QualityAppreciationRate.Triple;
+                    // Quality increases by 3 where there are 5 days or less left
+                    rate = QualityRate.Triple;
                 }
-                else if(CurrentDay < 11 && CurrentDay >= 6)
+                else if (CurrentDay < 11 && CurrentDay >= 6)
                 {
-                    rate = QualityAppreciationRate.Double;
+                    // Quality increases by 2 when there are 6 to 10 days remaining
+                    rate = QualityRate.Double;
                 }
                 return rate;
             }
         }
-        
+
         /// <summary>
         /// Blue Compare specific Update for the Quality property
         /// </summary>
         public override void UpdateQuality()
         {
-            if (!IsExpired)
+            // If the Quality is not at Max yet, increase it by the AppreciationRate
+            if (!IsExpired && Quality < Award._MaxQuality)
             {
-                // If the Quality is not at Max yet, increase it by the AppreciationRate
-                if (Quality < Award._MaxQuality)
-                {
-                    Quality += (int)AppreciationRate;
-                    // Quality cannot be greater than Max so make sure the AppreciationRate does not put it over.
-                    Quality = Quality > Award._MaxQuality ? Award._MaxQuality : Quality;
-                }
+                Quality += (int)AppreciationRate;
 
-                CurrentDay -= 1;
+                // Quality cannot be greater than Max so make sure the AppreciationRate does not put it over.
+                Quality = Quality > Award._MaxQuality ? Award._MaxQuality : Quality;
             }
 
-            if(IsExpired)
+            // Reduce the CurrentDay by 1
+            CurrentDay--;
+
+            if (IsExpired)
             {
                 // but Quality value drops to 0 after the expiration date.
-                Quality = 0;
+                Quality = _MinQuality;
             }
         }
     }
@@ -248,8 +210,6 @@ namespace ProviderQuality.Console
     /// </summary>
     public class BlueDistinctionPlusAward : Award
     {
-        //private const string BlueDistinctionPlus_AwardName = "Blue Distinction Plus";
-
         /// <summary>
         /// The immutable Blue Distinction Plus Quality value (Highest Quality)
         /// </summary>
@@ -266,26 +226,12 @@ namespace ProviderQuality.Console
             }
         }
 
-        ///// <summary>
-        ///// Blue Distinction Plus override for validating ExpiresIn property
-        ///// </summary>
-        //public override void ValidateExpiresIn()
-        //{
-        //    if (ExpiresIn != Award._Expired)
-        //    {
-        //        throw new ArgumentException("ExpiresIn must be == " + Award._Expired.ToString());
-        //    }
-
-        //    //base.ValidateExpiresIn();
-        //}
-
         /// <summary>
         /// Blue Distinction Plus specific Update for the Quality property
         /// </summary>
         public override void UpdateQuality()
         {
-            //Do Nothing - Leave the Values set to: Quality=80 and ExpiresIn=-1
-
+            //Do Nothing - Quality and ExpiresIn do not change
         }
     }
 
@@ -294,66 +240,27 @@ namespace ProviderQuality.Console
     /// </summary>
     public class BlueFirstAward : Award
     {
-        //private const string BlueFirst_AwardName = "Blue First";
-
         /// <summary>
         /// Blue First specific Update for the Quality property
+        /// Increases Quality by 1 for each day while Unexpired and Expired
+        /// On the day it expires, Quality is increased by 2
         /// </summary>
         public override void UpdateQuality()
         {
-            if (!IsExpired)
+            if (!IsExpired && Quality < Award._MaxQuality)
             {
-                // Always increases Quality by one until MaxQuality
-                if (Quality < Award._MaxQuality)
-                {
-                    Quality += 1;
-                }
-
-                // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
-                if (CurrentDay >= 0)
-                {
-                    CurrentDay -= 1;
-                }
+                // Increase Quality by one until MaxQuality
+                Quality += (int)QualityRate.Single;
             }
 
-            if (IsExpired)
+            // Reduce the CurrentDay by 1
+            CurrentDay--;
+
+            if (IsExpired && Quality < Award._MaxQuality)
             {
-                // Always increases Quality by one until MaxQuality
-                if (Quality < Award._MaxQuality)
-                {
-                    Quality += 1;
-                }
+                // Increase Quality by one until MaxQuality
+                Quality += (int)QualityRate.Single;
             }
         }
     }
-
-    //public class ACMEPartnerFacilityAward : Award
-    //{
-    //    private const string ACMEPartnerFacility_AwardName = "ACME Partner Facility";
-
-    //    public ACMEPartnerFacilityAward(int expiresIn, int quality) : base(ACMEPartnerFacility_AwardName, expiresIn, quality)
-    //    {
-    //        base.Validate(ACMEPartnerFacility_AwardName, expiresIn, quality);
-    //    }
-    //}
-
-    //public class GovQualityPlusAward : Award
-    //{
-    //    private const string GovQualityPlus_AwardName = "Gov Quality Plus";
-
-    //    public GovQualityPlusAward(int expiresIn, int quality) : base(GovQualityPlus_AwardName, expiresIn, quality)
-    //    {
-    //        base.Validate(GovQualityPlus_AwardName, expiresIn, quality);
-    //    }
-    //}
-
-    //public class TopConnectedProvidersAward : Award
-    //{
-    //    private const string TopConnectedProviders_AwardName = "Top Connected Providers";
-
-    //    public TopConnectedProvidersAward(int expiresIn, int quality) : base(TopConnectedProviders_AwardName, expiresIn, quality)
-    //    {
-    //        base.Validate(TopConnectedProviders_AwardName, expiresIn, quality);
-    //    }
-    //}
 }
