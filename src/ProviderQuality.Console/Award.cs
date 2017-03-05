@@ -27,12 +27,12 @@ namespace ProviderQuality.Console
                 if (!IsExpired)
                 {
                     // If it is not Expired and still has a positive Quality value, reduce the Quality by 1
-                    Quality -= 1;
+                    Quality -= (int)QualityRate.Single;
                 }
                 else
                 {
                     // If it is expired, and if it still has a positive Quality value, reduce the Quality by 2
-                    Quality -= 2;
+                    Quality -= (int)QualityRate.Double;
                 }
             }
 
@@ -98,7 +98,8 @@ namespace ProviderQuality.Console
         {
             Single = 1,
             Double = 2,
-            Triple = 3
+            Triple = 3,
+            Quadruple = 4
         };
 
         /// <summary>
@@ -150,6 +151,42 @@ namespace ProviderQuality.Console
         }
 
         #endregion //END - Properties
+    }
+
+    /// <summary>
+    /// The Blue Star Award
+    /// </summary>
+    public class BlueStarAward : Award
+    {
+        /// <summary>
+        /// Blue Star specific Update for the Quality property
+        /// Loses quality twice as fast as normal awards
+        /// </summary>
+        public override void UpdateQuality()
+        {
+            // Reduce the CurrentDay by 1
+            CurrentDay--;
+
+            if (Quality > Award._MinQuality)
+            {
+                if (!IsExpired)
+                {
+                    // If it is not Expired and still has a positive Quality value, reduce the Quality by 2
+                    Quality -= (int)QualityRate.Double;
+                }
+                else
+                {
+                    // If it is expired, and if it still has a positive Quality value, reduce the Quality by 4
+                    Quality -= (int)QualityRate.Quadruple;
+                }
+            }
+
+            // Quality can never be less than 0 (MinQuality)
+            if (Quality < Award._MinQuality)
+            {
+                Quality = Award._MinQuality;
+            }
+        }
     }
 
     /// <summary>

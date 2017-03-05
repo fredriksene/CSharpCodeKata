@@ -36,6 +36,16 @@ namespace ProviderQuality.Console
                             CurrentDay = expiresIn,
                         };
                         break;
+                    case "blue star":
+                        createdAward = new BlueStarAward()
+                        {
+                            Name = awardName,
+                            ExpiresIn = expiresIn,
+                            Quality = quality,
+                            OriginalQuality = quality,
+                            CurrentDay = expiresIn,
+                        };
+                        break;
                     case "blue distinction plus":
                         createdAward = new BlueDistinctionPlusAward()
                         {

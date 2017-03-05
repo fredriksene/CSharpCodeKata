@@ -24,6 +24,7 @@ namespace ProviderQuality.Tests
                     , "Gov Quality Plus"
                     , "ACME Partner Facility"
                     , "Top Connected Providers"
+                    , "Blue Star"
                 }
             );
 
@@ -72,7 +73,7 @@ namespace ProviderQuality.Tests
         public void TestAllAwardsValidation()
         {
             Assert.IsNotNull(AllAwards);
-            Assert.IsTrue(AllAwards.Keys.Count == 6);
+            Assert.IsTrue(AllAwards.Keys.Count == 7);
 
             Assert.IsTrue(AllAwards.ContainsKey("ACME Partner Facility"));
             Assert.IsTrue(AllAwards.ContainsKey("Gov Quality Plus"));
@@ -83,6 +84,8 @@ namespace ProviderQuality.Tests
 
             Assert.IsTrue(AllAwards.ContainsKey("Blue Distinction Plus"));
 
+            Assert.IsTrue(AllAwards.ContainsKey("Blue Star"));
+
             Assert.IsTrue(AllAwards["ACME Partner Facility"].Count == 663);
             Assert.IsTrue(AllAwards["Gov Quality Plus"].Count == 663);
             Assert.IsTrue(AllAwards["Top Connected Providers"].Count == 663);
@@ -91,9 +94,174 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(AllAwards["Blue Compare"].Count == 663);
 
             Assert.IsTrue(AllAwards["Blue Distinction Plus"].Count == 663);
+            Assert.IsTrue(AllAwards["Blue Star"].Count == 663);
+
         }
 
         #region Set of tests for new Award.UpdateQuality refactor, matching the entire suite of tests, 1 for 1, from UpdateQualityAwardsTests
+
+        #region Blue Star
+
+        /// <summary>
+        /// Covers BlueStar
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueStar_UpdateQuality_Unexpired()
+        {
+            var top = AllAwards["Top Connected Providers"].Find(x => x.ExpiresIn == 3 && x.Quality == 6);
+            var bs = AllAwards["Blue Star"].Find(x => x.ExpiresIn == 3 && x.Quality == 6);
+
+            Assert.IsNotNull(top);
+            Assert.IsTrue(top.Name == "Top Connected Providers");
+            Assert.IsTrue(top.ExpiresIn == 3);
+            Assert.IsTrue(top.CurrentDay == 3);
+            Assert.IsTrue(top.Quality == 6);
+            Assert.IsNotNull(bs);
+            Assert.IsTrue(bs.Name == "Blue Star");
+            Assert.IsTrue(bs.ExpiresIn == 3);
+            Assert.IsTrue(bs.CurrentDay == 3);
+            Assert.IsTrue(bs.Quality == 6);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            Assert.IsTrue(top.ExpiresIn == 3);
+            Assert.IsTrue(top.CurrentDay == 2);
+            Assert.IsTrue(top.Quality == 5);
+
+            Assert.IsTrue(bs.ExpiresIn == 3);
+            Assert.IsTrue(bs.CurrentDay == 2);
+            Assert.IsTrue(bs.Quality == 4);
+        }
+
+        /// <summary>
+        /// Covers Blue Star
+        /// 
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueStar_UpdateQuality_Expired()
+        {
+            var top = AllAwards["Top Connected Providers"].Find(x => x.ExpiresIn == 0 && x.Quality == 6);
+            var bs = AllAwards["Blue Star"].Find(x => x.ExpiresIn == 0 && x.Quality == 6);
+
+            Assert.IsNotNull(top);
+            Assert.IsTrue(top.Name == "Top Connected Providers");
+            Assert.IsTrue(top.ExpiresIn == 0);
+            Assert.IsTrue(top.CurrentDay == 0);
+            Assert.IsTrue(top.Quality == 6);
+            Assert.IsNotNull(bs);
+            Assert.IsTrue(bs.Name == "Blue Star");
+            Assert.IsTrue(bs.ExpiresIn == 0);
+            Assert.IsTrue(bs.CurrentDay == 0);
+            Assert.IsTrue(bs.Quality == 6);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            Assert.IsTrue(top.ExpiresIn == 0);
+            Assert.IsTrue(top.CurrentDay == -1);
+            Assert.IsTrue(top.Quality == 4);
+
+            Assert.IsTrue(bs.ExpiresIn == 0);
+            Assert.IsTrue(bs.CurrentDay == -1);
+            Assert.IsTrue(bs.Quality == 2);
+        }
+
+        /// <summary>
+        /// Covers Blue Star
+        /// Covers two calls to UpdateQuality
+        ///     the first is when all three awards are unexpired
+        ///     the second is when all three awards are expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueStar_UpdateQuality_UnexpiredExpired()
+        {
+            var top = AllAwards["Top Connected Providers"].Find(x => x.ExpiresIn == 1 && x.Quality == 6);
+            var bs = AllAwards["Blue Star"].Find(x => x.ExpiresIn == 1 && x.Quality == 6);
+
+            Assert.IsNotNull(top);
+            Assert.IsTrue(top.Name == "Top Connected Providers");
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == 1);
+            Assert.IsTrue(top.Quality == 6);
+            Assert.IsNotNull(bs);
+            Assert.IsTrue(bs.Name == "Blue Star");
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == 1);
+            Assert.IsTrue(bs.Quality == 6);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            // Unexpired
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == 0);
+            Assert.IsTrue(top.Quality == 5);
+
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == 0);
+            Assert.IsTrue(bs.Quality == 4);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            // Expired
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == -1);
+            Assert.IsTrue(top.Quality == 3);
+
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == -1);
+            Assert.IsTrue(bs.Quality == 0);
+        }
+
+        /// <summary>
+        /// Covers Blue Star
+        /// 
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueStar_UpdateQuality_MinQuality()
+        {
+            var top = AllAwards["Top Connected Providers"].Find(x => x.ExpiresIn == 1 && x.Quality == 1);
+            var bs = AllAwards["Blue Star"].Find(x => x.ExpiresIn == 1 && x.Quality == 1);
+
+            Assert.IsNotNull(top);
+            Assert.IsTrue(top.Name == "Top Connected Providers");
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == 1);
+            Assert.IsTrue(top.Quality == 1);
+            Assert.IsNotNull(bs);
+            Assert.IsTrue(bs.Name == "Blue Star");
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == 1);
+            Assert.IsTrue(bs.Quality == 1);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            // Unexpired
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == 0);
+            Assert.IsTrue(top.Quality == 0);
+
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == 0);
+            Assert.IsTrue(bs.Quality == 0);
+
+            top.UpdateQuality();
+            bs.UpdateQuality();
+
+            // Expired
+            Assert.IsTrue(top.ExpiresIn == 1);
+            Assert.IsTrue(top.CurrentDay == -1);
+            Assert.IsTrue(top.Quality == 0);
+
+            Assert.IsTrue(bs.ExpiresIn == 1);
+            Assert.IsTrue(bs.CurrentDay == -1);
+            Assert.IsTrue(bs.Quality == 0);
+        }
+
+        #endregion //END - Blue Star
 
         #region Blue Compare
 
