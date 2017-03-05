@@ -8,6 +8,9 @@ namespace ProviderQuality.Tests
     [TestClass]
     public class UpdateQualityAwardsTests
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [TestMethod]
         public void TestImmutabilityOfBlueDistinctionPlus()
         {
@@ -32,127 +35,96 @@ namespace ProviderQuality.Tests
         //                       that probably won't change.  I watched it all in the debugger and know everything works
         //                       plus QA has already signed off and no one has complained.
 
-        //Types of Awards
-        //Blue First
-        //Blue Compare
-        //Blue Distinction Plus
-        //Gov Quality Plus
-        //ACME Partner Facility
-        //Top Connected Providers
+        #region Blue Compare
 
         /// <summary>
-        /// Covers Blue Compare, Blue Distinction Plus and Blue First
+        /// Covers Blue Compare
+        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
         /// </summary>
         [TestMethod]
-        public void TestAllBlueAwardsQualityUpdateUnexpired()
+        public void Test_BlueCompare_AppQualityUpdate_Unexpired()
         {
             var app = new Program()
             {
                 Awards = new List<Award>
                 {
-                    new Award {Name = "Blue Compare", ExpiresIn = 15, Quality = 20},
-                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 5, Quality = 80},
-                    new Award {Name = "Blue First", ExpiresIn = 2, Quality = 0}
+                    new Award {Name = "Blue Compare", ExpiresIn = 15, Quality = 20}
                 }
             };
 
-            Assert.IsTrue(app.Awards.Count == 3);
+            Assert.IsTrue(app.Awards.Count == 1);
             Assert.IsTrue(app.Awards[0].Name == "Blue Compare");
             Assert.IsTrue(app.Awards[0].ExpiresIn == 15);
             Assert.IsTrue(app.Awards[0].Quality == 20);
-            Assert.IsTrue(app.Awards[1].Name == "Blue Distinction Plus");
-            Assert.IsTrue(app.Awards[1].ExpiresIn == 5);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Name == "Blue First");
-            Assert.IsTrue(app.Awards[2].ExpiresIn == 2);
-            Assert.IsTrue(app.Awards[2].Quality == 0);
 
             app.UpdateQuality();
 
             Assert.IsTrue(app.Awards[0].Quality == 21);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Quality == 1);
-        }
-
-        /// <summary>
-        /// Covers Blue Compare, Blue Distinction Plus and Blue First
-        /// </summary>
-        [TestMethod]
-        public void TestAllBlueAwardsQualityUpdateExpired()
-        {
-            var app = new Program()
-            {
-                Awards = new List<Award>
-                {
-                    new Award {Name = "Blue Compare", ExpiresIn = 0, Quality = 20},
-                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 0, Quality = 80},
-                    new Award {Name = "Blue First", ExpiresIn = 0, Quality = 10}
-                }
-            };
-
-            Assert.IsTrue(app.Awards.Count == 3);
-            Assert.IsTrue(app.Awards[0].Name == "Blue Compare");
-            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
-            Assert.IsTrue(app.Awards[0].Quality == 20);
-            Assert.IsTrue(app.Awards[1].Name == "Blue Distinction Plus");
-            Assert.IsTrue(app.Awards[1].ExpiresIn == 0);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Name == "Blue First");
-            Assert.IsTrue(app.Awards[2].ExpiresIn == 0);
-            Assert.IsTrue(app.Awards[2].Quality == 10);
-
-            app.UpdateQuality();
-
-            Assert.IsTrue(app.Awards[0].Quality == 0);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Quality == 12);
-        }
-
-        /// <summary>
-        /// Covers Blue Compare, Blue Distinction Plus and Blue First
-        /// </summary>
-        [TestMethod]
-        public void TestAllBlueAwardsQualityUpdateUnexpiredExpired()
-        {
-            var app = new Program()
-            {
-                Awards = new List<Award>
-                {
-                    new Award {Name = "Blue Compare", ExpiresIn = 1, Quality = 20},
-                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 1, Quality = 80},
-                    new Award {Name = "Blue First", ExpiresIn = 1, Quality = 10}
-                }
-            };
-
-            Assert.IsTrue(app.Awards.Count == 3);
-            Assert.IsTrue(app.Awards[0].Name == "Blue Compare");
-            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
-            Assert.IsTrue(app.Awards[0].Quality == 20);
-            Assert.IsTrue(app.Awards[1].Name == "Blue Distinction Plus");
-            Assert.IsTrue(app.Awards[1].ExpiresIn == 1);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Name == "Blue First");
-            Assert.IsTrue(app.Awards[2].ExpiresIn == 1);
-            Assert.IsTrue(app.Awards[2].Quality == 10);
-
-            app.UpdateQuality();
-
-            Assert.IsTrue(app.Awards[0].Quality == 23);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Quality == 11);
-
-            app.UpdateQuality();
-
-            Assert.IsTrue(app.Awards[0].Quality == 0);
-            Assert.IsTrue(app.Awards[1].Quality == 80);
-            Assert.IsTrue(app.Awards[2].Quality == 13);
         }
 
         /// <summary>
         /// Covers Blue Compare
+        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
         /// </summary>
         [TestMethod]
-        public void TestBlueCompareAwardQualityUpdateMaxMinQuality()
+        public void Test_BlueCompare_AppQualityUpdate_Expired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue Compare", ExpiresIn = 0, Quality = 20}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue Compare");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
+            Assert.IsTrue(app.Awards[0].Quality == 20);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 0);
+        }
+
+        /// <summary>
+        /// Covers Blue Compare
+        /// Execute a QualityUpdate and make sure Quality increases by 3 the day before the award expires
+        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueCompare_AppQualityUpdate_UnexpiredExpired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue Compare", ExpiresIn = 1, Quality = 20}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue Compare");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
+            Assert.IsTrue(app.Awards[0].Quality == 20);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 23);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 0);
+        }
+
+        /// <summary>
+        /// Covers Blue Compare
+        /// Execute a QualityUpdate and make sure Quality does not exceed 50 when not expired
+        /// Execute a QualityUpdate and make sure Quality drops to 0 when expired
+        /// Execute a QualityUpdate and make sure Quality remains 0 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueCompare_AppQualityUpdate_MaxMinQuality()
         {
             var app = new Program()
             {
@@ -176,13 +148,189 @@ namespace ProviderQuality.Tests
 
             // Drops to 0 after it expires
             Assert.IsTrue(app.Awards[0].Quality == 0);
+
+            app.UpdateQuality();
+
+            // Remains 0 after it expires
+            Assert.IsTrue(app.Awards[0].Quality == 0);
+        }
+
+        #endregion //END - Blue Compare
+
+        #region Blue Distinction Plus
+
+        /// <summary>
+        /// Covers Blue Distinction Plus
+        /// Execute a QualityUpdate and make sure Quality remains 80 when not expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueDistinctionPlus_AppQualityUpdate_Unexpired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 5, Quality = 80}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue Distinction Plus");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 5);
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+        }
+
+        /// <summary>
+        /// Covers Blue Distinction Plus
+        /// Execute a QualityUpdate and make sure Quality remains at 80 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueDistinctionPlus_AppQualityUpdate_Expired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 0, Quality = 80}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue Distinction Plus");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+        }
+
+        /// <summary>
+        /// Covers Blue Distinction Plus
+        /// Execute a QualityUpdate and make sure Quality remains 80 when not expired
+        /// Execute a QualityUpdate and make sure Quality remains 80 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueDistinctionPlus_AppQualityUpdate_UnexpiredExpired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue Distinction Plus", ExpiresIn = 1, Quality = 80}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue Distinction Plus");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 80);
+        }
+
+        #endregion //END - Blue Distinction Plus
+
+        #region Blue First
+
+        /// <summary>
+        /// Covers Blue First
+        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueFirst_AppQualityUpdate_Unexpired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue First", ExpiresIn = 2, Quality = 0}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue First");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 2);
+            Assert.IsTrue(app.Awards[0].Quality == 0);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 1);
         }
 
         /// <summary>
         /// Covers Blue First
+        /// Execute a QualityUpdate and make sure Quality increases by 2 when expired
         /// </summary>
         [TestMethod]
-        public void TestBlueFirstAwardQualityUpdateMaxQuality()
+        public void Test_BlueFirst_AppQualityUpdate_Expired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue First", ExpiresIn = 0, Quality = 10}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue First");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
+            Assert.IsTrue(app.Awards[0].Quality == 10);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 12);
+        }
+
+        /// <summary>
+        /// Covers Blue First
+        /// Execute a QualityUpdate and make sure Quality increases by 1 when not expired
+        /// Execute a QualityUpdate and make sure Quality increases by 2 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueFirst_AppQualityUpdate_UnexpiredExpired()
+        {
+            var app = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Blue First", ExpiresIn = 1, Quality = 10}
+                }
+            };
+
+            Assert.IsTrue(app.Awards.Count == 1);
+            Assert.IsTrue(app.Awards[0].Name == "Blue First");
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
+            Assert.IsTrue(app.Awards[0].Quality == 10);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 11);
+
+            app.UpdateQuality();
+
+            Assert.IsTrue(app.Awards[0].Quality == 13);
+        }
+
+        /// <summary>
+        /// Covers Blue First
+        /// Execute a QualityUpdate and make sure Quality increases by 2 the day it expires
+        /// Execute a QualityUpdate and make sure Quality increases by 1 when expired to max of 50
+        /// Execute a QualityUpdate and make sure Quality does not exceed 50 when expired
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueFirst_AppQualityUpdate_MaxQuality()
         {
             var app = new Program()
             {
@@ -213,12 +361,16 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(app.Awards[0].Quality == 50);
         }
 
+        #endregion //END - Blue First
+
+        #region Generic Awards
+
         /// <summary>
         /// Covers Gov Quality Plus, ACME Partner Facility and Top Connected Providers
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void TestGenericAwardQualityUpdateUnexpired()
+        public void Test_GenericAward_AppQualityUpdate_Unexpired()
         {
             var app = new Program()
             {
@@ -253,7 +405,7 @@ namespace ProviderQuality.Tests
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void TestGenericAwardQualityUpdateExpired()
+        public void Test_GenericAward_AppQualityUpdate_Expired()
         {
             var app = new Program()
             {
@@ -291,7 +443,7 @@ namespace ProviderQuality.Tests
         ///     the second is when all three awards are expired
         /// </summary>
         [TestMethod]
-        public void TestGenericAwardQualityUpdateUnexpiredExpired()
+        public void Test_GenericAward_AppQualityUpdate_UnexpiredExpired()
         {
             var app = new Program()
             {
@@ -332,7 +484,7 @@ namespace ProviderQuality.Tests
         /// These Awards all have the same business rules for UpdateQuality
         /// </summary>
         [TestMethod]
-        public void TestGenericAwardQualityUpdateMinQuality()
+        public void Test_GenericAward_AppQualityUpdate_MinQuality()
         {
             var app = new Program()
             {
@@ -368,5 +520,6 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(app.Awards[2].Quality == 0);
         }
 
+        #endregion //END - Generic Awards
     }
 }

@@ -23,6 +23,12 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void UpdateQuality()
         {
+            // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
+            if (CurrentDay >= 0)
+            {
+                CurrentDay -= 1;
+            }
+
             // If it is not Expired
             if (!IsExpired)
             {
@@ -32,13 +38,9 @@ namespace ProviderQuality.Console
                     Quality -= 1;
                 }
 
-                // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
-                if (CurrentDay > 0)
-                {
-                    CurrentDay -= 1;
-                }
             }
-            else
+
+            if(IsExpired)
             {
                 // If it is expired, and if it still has a positive Quality value, reduce the Quality by 2
                 if (Quality > Award._MinQuality)
@@ -229,8 +231,11 @@ namespace ProviderQuality.Console
                     // Quality cannot be greater than Max so make sure the AppreciationRate does not put it over.
                     Quality = Quality > Award._MaxQuality ? Award._MaxQuality : Quality;
                 }
+
+                CurrentDay -= 1;
             }
-            else
+
+            if(IsExpired)
             {
                 // but Quality value drops to 0 after the expiration date.
                 Quality = 0;
@@ -280,6 +285,7 @@ namespace ProviderQuality.Console
         public override void UpdateQuality()
         {
             //Do Nothing - Leave the Values set to: Quality=80 and ExpiresIn=-1
+
         }
     }
 
@@ -304,7 +310,7 @@ namespace ProviderQuality.Console
                 }
 
                 // If it still has a positive CurrentDay value, reduce the CurrentDay by 1
-                if (CurrentDay > 0)
+                if (CurrentDay >= 0)
                 {
                     CurrentDay -= 1;
                 }
