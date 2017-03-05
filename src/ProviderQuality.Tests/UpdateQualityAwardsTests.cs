@@ -27,6 +27,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 80);
         }
 
@@ -58,6 +59,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 14);
             Assert.IsTrue(app.Awards[0].Quality == 21);
         }
 
@@ -83,6 +85,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 0);
         }
 
@@ -109,10 +112,12 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 23);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 0);
         }
 
@@ -140,16 +145,19 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             // Cannot exceed 50
             Assert.IsTrue(app.Awards[0].Quality == 50);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             // Drops to 0 after it expires
             Assert.IsTrue(app.Awards[0].Quality == 0);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -2);
             // Remains 0 after it expires
             Assert.IsTrue(app.Awards[0].Quality == 0);
         }
@@ -180,6 +188,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 5);
             Assert.IsTrue(app.Awards[0].Quality == 80);
         }
 
@@ -205,6 +214,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 80);
         }
 
@@ -231,10 +241,12 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
             Assert.IsTrue(app.Awards[0].Quality == 80);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
             Assert.IsTrue(app.Awards[0].Quality == 80);
         }
 
@@ -264,6 +276,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 1);
             Assert.IsTrue(app.Awards[0].Quality == 1);
         }
 
@@ -289,6 +302,7 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 12);
         }
 
@@ -315,10 +329,12 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 11);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 13);
         }
 
@@ -346,16 +362,19 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             // Now Expired
             Assert.IsTrue(app.Awards[0].Quality == 49);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -2);
             // Expired and at Max
             Assert.IsTrue(app.Awards[0].Quality == 50);
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -3);
             // Cannot exceed 50
             Assert.IsTrue(app.Awards[0].Quality == 50);
         }
@@ -394,8 +413,13 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 4);
             Assert.IsTrue(app.Awards[0].Quality == 6);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == 9);
             Assert.IsTrue(app.Awards[1].Quality == 19);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == 2);
             Assert.IsTrue(app.Awards[2].Quality == 5);
         }
 
@@ -429,8 +453,13 @@ namespace ProviderQuality.Tests
 
             app.UpdateQuality();
 
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 5);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[1].Quality == 18);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[2].Quality == 4);
         }
 
@@ -466,15 +495,27 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(app.Awards[2].Quality == 6);
 
             app.UpdateQuality();
+
             // Unexpired
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 6);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[1].Quality == 19);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[2].Quality == 5);
 
             app.UpdateQuality();
+
             // Expired
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 4);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[1].Quality == 17);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[2].Quality == 3);
         }
 
@@ -507,15 +548,27 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(app.Awards[2].Quality == 1);
 
             app.UpdateQuality();
+
             // Unexpired
+            Assert.IsTrue(app.Awards[0].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[0].Quality == 0);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[1].Quality == 0);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == 0);
             Assert.IsTrue(app.Awards[2].Quality == 0);
 
             app.UpdateQuality();
+
             // Expired
+            Assert.IsTrue(app.Awards[0].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[0].Quality == 0);
+
+            Assert.IsTrue(app.Awards[1].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[1].Quality == 0);
+
+            Assert.IsTrue(app.Awards[2].ExpiresIn == -1);
             Assert.IsTrue(app.Awards[2].Quality == 0);
         }
 
