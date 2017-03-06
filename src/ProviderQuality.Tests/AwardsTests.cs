@@ -402,6 +402,64 @@ namespace ProviderQuality.Tests
             Assert.IsTrue(bc.Quality == 0);
         }
 
+        /// <summary>
+        /// Covers Blue Compare
+        /// Executes an loop from Expires in 12 through -1
+        /// And tests the Quality and ExpiresIn values before and after each UpdateQuality call
+        /// </summary>
+        [TestMethod]
+        public void Test_BlueCompare_UpdateQuality_Progression()
+        {
+            Dictionary<int, int> answerKey = new Dictionary<int, int>()
+            {
+                // Key = ExpiresIn, Value = Quality
+                {12,25},// Start, Increase by 1 if more than 10 days
+                {11,26},// Increase by 1 if more than 10 days
+                {10,27},// Increase by 2 if more than 5 days and 10 days or less
+                {9,29},// Increase by 2 if more than 5 days and 10 days or less
+                {8,31},// Increase by 2 if more than 5 days and 10 days or less
+                {7,33},// Increase by 2 if more than 5 days and 10 days or less
+                {6,35},// Increase by 2 if more than 5 days and 10 days or less
+                {5,37},// Increase by 3 if not expired and 5 days or less
+                {4,40},// Increase by 3 if not expired and 5 days or less
+                {3,43},// Increase by 3 if not expired and 5 days or less
+                {2,46},// Increase by 3 if not expired and 5 days or less
+                {1,49},// Increase by 3 if not expired and 5 days or less
+                {0,50},// Increase by 3 if not expired and 5 days or less, cannot exceed 50
+                {-1,0} // Reduce to 0 if expired
+            };
+
+            var bc = new BlueCompareAward()
+            {
+                Name = "Blue Compare",
+                Quality = 25,
+                ExpiresIn = 12,
+                OriginalQuality = 25,
+                OriginalExpiresIn = 12
+            };
+
+            Assert.IsNotNull(bc);
+            Assert.IsTrue(bc.Name == "Blue Compare");
+            Assert.IsTrue(bc.OriginalExpiresIn == 12);
+            Assert.IsTrue(bc.ExpiresIn == 12);
+            Assert.IsTrue(bc.Quality == 25);
+
+            for(int idx = 12; idx > -2; idx--)
+            {
+                int expiresIn = idx;
+                Assert.IsTrue(bc.ExpiresIn == expiresIn);
+                Assert.IsTrue(bc.Quality == answerKey[expiresIn]);
+
+                bc.UpdateQuality();
+
+                if (expiresIn > -1)//to prevent the last execution
+                {
+                    Assert.IsTrue(bc.ExpiresIn == expiresIn - 1);
+                    Assert.IsTrue(bc.Quality == answerKey[expiresIn - 1]);
+                }
+            }
+        }
+
         #endregion //END - Blue Compare
 
         #region Blue Distinction Plus
