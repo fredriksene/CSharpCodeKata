@@ -23,12 +23,27 @@ namespace ProviderQuality.Console
                     new Award {Name = "Blue Distinction Plus", ExpiresIn = 0, Quality = 80},
                     new Award {Name = "Blue First", ExpiresIn = 2, Quality = 0},
                     new Award {Name = "Gov Quality Plus", ExpiresIn = 10, Quality = 20},
-                    new Award {Name = "Top Connected Providers", ExpiresIn = 3, Quality = 6}
+                    new Award {Name = "Top Connected Providers", ExpiresIn = 3, Quality = 6},
+                    new Award {Name = "Blue Star", ExpiresIn = 3, Quality = 6}
                 }
 
             };
 
             app.UpdateQuality();
+
+            // Blue Star testing
+            var app2 = new Program()
+            {
+                Awards = new List<Award>
+                {
+                    new Award {Name = "Top Connected Providers", ExpiresIn = 3, Quality = 6},
+                    new Award {Name = "Blue Star", ExpiresIn = 3, Quality = 6}
+                }
+
+            };
+
+            // Cloned and Updated to include the Blue Star implementation
+            app2.UpdateQuality2();
 
             System.Console.ReadKey();
 
@@ -98,6 +113,114 @@ namespace ProviderQuality.Console
                             if (Awards[i].Quality > 0)
                             {
                                 if (Awards[i].Name != "Blue Distinction Plus")
+                                {
+                                    // All Non-Blue awards have no Quality if they have expired
+                                    Awards[i].Quality = Awards[i].Quality - 1;
+                                }
+                            }
+                        }
+                        // "Blue Compare"
+                        else
+                        {
+                            // Quality becomes 0 after it has expired
+                            Awards[i].Quality = Awards[i].Quality - Awards[i].Quality;
+                        }
+                    }
+                    else
+                    {
+                        // "Blue First"
+                        if (Awards[i].Quality < 50)
+                        {
+                            Awards[i].Quality = Awards[i].Quality + 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cloned from UpdateQuality and updated to include Blue Star business logic
+        /// </summary>
+        public void UpdateQuality2()
+        {
+            //Loop through all the awards
+            for (var i = 0; i < Awards.Count; i++)
+            {
+                // All awards that are NOT "Blue First, Blue Compare, Blue Distinction Plus - if the Quality is > 0, reduce it by 1
+                if (Awards[i].Name != "Blue First" && Awards[i].Name != "Blue Compare")
+                {
+                    if (Awards[i].Quality > 0)
+                    {
+                        if (Awards[i].Name != "Blue Distinction Plus")
+                        {
+                            Awards[i].Quality = Awards[i].Quality - 1;
+                        }
+                    }
+                    if (Awards[i].Quality > 0)
+                    {
+                        if (Awards[i].Name == "Blue Star")
+                        {
+                            Awards[i].Quality = Awards[i].Quality - 1;
+                        }
+                    }
+                }
+                // "Blue First, Blue Compare"
+                else
+                {
+                    // If the quality is not at Max yet, increase it by 1
+                    if (Awards[i].Quality < 50)
+                    {
+                        Awards[i].Quality = Awards[i].Quality + 1;
+
+                        if (Awards[i].Name == "Blue Compare")
+                        {
+                            // If Blue Compare expires in 10 days or less and the quality is not at Max yet, increase it by another 1 (doubling the rate)
+                            if (Awards[i].ExpiresIn < 11)
+                            {
+                                if (Awards[i].Quality < 50)
+                                {
+                                    Awards[i].Quality = Awards[i].Quality + 1;
+                                }
+                            }
+
+                            // If Blue Compare expires in 5 days or less and the quality is not at Max yet, increase it by another 1 (tripling the rate)
+                            if (Awards[i].ExpiresIn < 6)
+                            {
+                                if (Awards[i].Quality < 50)
+                                {
+                                    Awards[i].Quality = Awards[i].Quality + 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // All awards except "Blue Distinction Plus" reduce the remaining expires in value by 1
+                if (Awards[i].Name != "Blue Distinction Plus")
+                {
+                    Awards[i].ExpiresIn = Awards[i].ExpiresIn - 1;
+                }
+
+                // if the award has expired
+                if (Awards[i].ExpiresIn < 0)
+                {
+                    // All awards except "Blue First"
+                    if (Awards[i].Name != "Blue First")
+                    {
+                        if (Awards[i].Name != "Blue Compare")
+                        {
+                            if (Awards[i].Quality > 0)
+                            {
+                                if (Awards[i].Name != "Blue Distinction Plus")
+                                {
+                                    // All Non-Blue awards have no Quality if they have expired
+                                    Awards[i].Quality = Awards[i].Quality - 1;
+                                }
+                            }
+
+                            if (Awards[i].Quality > 0)
+                            {
+                                if (Awards[i].Name == "Blue Star")
                                 {
                                     // All Non-Blue awards have no Quality if they have expired
                                     Awards[i].Quality = Awards[i].Quality - 1;

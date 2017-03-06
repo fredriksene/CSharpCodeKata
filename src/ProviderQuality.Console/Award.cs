@@ -19,8 +19,8 @@ namespace ProviderQuality.Console
         /// </summary>
         public virtual void UpdateQuality()
         {
-            // Reduce the CurrentDay by 1
-            CurrentDay--;
+            // Reduce the ExpiresIn by 1
+            ExpiresIn--;
 
             if (Quality > Award._MinQuality)
             {
@@ -118,12 +118,12 @@ namespace ProviderQuality.Console
         public string Name { get; set; }
 
         /// <summary>
-        /// The ExpiresIn property
+        /// The OriginalExpiresIn property
         /// </summary>
-        public int ExpiresIn { get; set; }
+        public int OriginalExpiresIn { get; set; }
 
         /// <summary>
-        /// The Quality of the Award for the CurrentDay 
+        /// The Quality of the Award for the ExpiresIn 
         /// </summary>
         public int Quality { get; set; }
 
@@ -134,19 +134,19 @@ namespace ProviderQuality.Console
 
         /// <summary>
         /// ExpiresIn represents the number of days remaining
-        /// CurrentDay is the offset from ExpiresIn
+        /// ExpiresIn is the offset from ExpiresIn
         /// ex. ExpiresIn = 5, in decremented 1 for each UpdateQuality call
         /// </summary>
-        public int CurrentDay { get; set; }
+        public int ExpiresIn { get; set; }
 
         /// <summary>
-        /// True when CurrentDay is a negative value
+        /// True when ExpiresIn is a negative value
         /// </summary>
         public bool IsExpired
         {
             get
             {
-                return CurrentDay < 0;
+                return ExpiresIn < 0;
             }
         }
 
@@ -164,8 +164,8 @@ namespace ProviderQuality.Console
         /// </summary>
         public override void UpdateQuality()
         {
-            // Reduce the CurrentDay by 1
-            CurrentDay--;
+            // Reduce the ExpiresIn by 1
+            ExpiresIn--;
 
             if (Quality > Award._MinQuality)
             {
@@ -195,7 +195,7 @@ namespace ProviderQuality.Console
     public class BlueCompareAward : Award
     {
         /// <summary>
-        /// Calculates the Appreciate Rate based on the CurrentDay
+        /// Calculates the Appreciate Rate based on the ExpiresIn
         /// </summary>
         public QualityRate AppreciationRate
         {
@@ -203,12 +203,12 @@ namespace ProviderQuality.Console
             {
                 QualityRate rate = QualityRate.Single;
                 // Quality increases by 2 when there are 10 days or less left, and by 3 where there are 5 days or less left
-                if (CurrentDay < 6 && CurrentDay >= 0)
+                if (ExpiresIn < 6 && ExpiresIn >= 0)
                 {
                     // Quality increases by 3 where there are 5 days or less left
                     rate = QualityRate.Triple;
                 }
-                else if (CurrentDay < 11 && CurrentDay >= 6)
+                else if (ExpiresIn < 11 && ExpiresIn >= 6)
                 {
                     // Quality increases by 2 when there are 6 to 10 days remaining
                     rate = QualityRate.Double;
@@ -231,8 +231,8 @@ namespace ProviderQuality.Console
                 Quality = Quality > Award._MaxQuality ? Award._MaxQuality : Quality;
             }
 
-            // Reduce the CurrentDay by 1
-            CurrentDay--;
+            // Reduce the ExpiresIn by 1
+            ExpiresIn--;
 
             if (IsExpired)
             {
@@ -290,8 +290,8 @@ namespace ProviderQuality.Console
                 Quality += (int)QualityRate.Single;
             }
 
-            // Reduce the CurrentDay by 1
-            CurrentDay--;
+            // Reduce the ExpiresIn by 1
+            ExpiresIn--;
 
             if (IsExpired && Quality < Award._MaxQuality)
             {

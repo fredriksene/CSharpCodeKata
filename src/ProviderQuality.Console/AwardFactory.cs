@@ -20,63 +20,64 @@ namespace ProviderQuality.Console
                         createdAward = new Award()
                         {
                             Name = awardName,
-                            ExpiresIn = expiresIn,
                             Quality = quality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                     case "blue compare":
                         createdAward = new BlueCompareAward()
                         {
                             Name = awardName,
-                            ExpiresIn = expiresIn,
                             Quality = quality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                     case "blue star":
                         createdAward = new BlueStarAward()
                         {
                             Name = awardName,
-                            ExpiresIn = expiresIn,
                             Quality = quality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                     case "blue distinction plus":
                         createdAward = new BlueDistinctionPlusAward()
                         {
                             Name = awardName,
-                            ExpiresIn = expiresIn,
                             Quality = BlueDistinctionPlusAward._BlueDistinctionPlusQuality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                     case "blue first":
                         createdAward = new BlueFirstAward()
                         {
                             Name = awardName,
-                            ExpiresIn = expiresIn,
                             Quality = quality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                     default:
                         createdAward = new Award()
                         {
                             Name = "Unknown",
-                            ExpiresIn = expiresIn,
                             Quality = quality,
+                            ExpiresIn = expiresIn,
                             OriginalQuality = quality,
-                            CurrentDay = expiresIn,
+                            OriginalExpiresIn = expiresIn
                         };
                         break;
                 }
+
                 // Make sure thew new Award is valid
                 createdAward.Validate();
 
